@@ -5,7 +5,7 @@ import sys
 GIST_REGEX=r"""((?:(?:http|https)\://)?gist\.github\.com/[a-z\d-]+/[a-f\d]+)"""
 
 MAX_LINE_LEN = 100
-LINES_PER_FILE = 10
+LINES_PER_FILE = 50
 
 def encoding(enc):
     if enc.startswith('text'):
