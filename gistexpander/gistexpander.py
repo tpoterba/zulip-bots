@@ -1,10 +1,19 @@
 import re
 import requests
+import sys
 
 GIST_REGEX=r"""((?:(?:http|https)\://)?gist\.github\.com/[a-z\d-]+/[a-f\d]+)"""
 
 MAX_LINE_LEN = 100
 LINES_PER_FILE = 10
+
+def encoding(enc):
+    if enc.startswith('text'):
+        return ''
+    elif enc == 'application/x-python':
+        return 'python'
+    else:
+        return None
 
 class GistExpanderHandler(object):
     '''
@@ -35,11 +44,12 @@ class GistExpanderHandler(object):
 
                 for gist_file in r['files'].values():
                     reply.append(f"File `{gist_file['filename']}`:")
-                    if not gist_file['type'].startswith('text'):
+                    enc = encoding(gist_file['type'])
+                    if enc is None:
                         reply.append(f"<not text: {gist_file['type']}>")
                     else:
                         contents = gist_file['content'].split('\n')
-                        reply.append('```')
+                        reply.append(f'```{enc}')
                         for line in contents[:LINES_PER_FILE]:
                             if len(line) > MAX_LINE_LEN:
                                 reply.append(line[:MAX_LINE_LEN] + '...')
